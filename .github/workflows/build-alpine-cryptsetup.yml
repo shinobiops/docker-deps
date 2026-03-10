@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'alpine-cryptsetup/**'
+      - '.github/workflows/build-alpine-cryptsetup.yml'
     branches:
       - main
 
