@@ -1,0 +1,36 @@
+name: Build alpine-cryptsetup
+
+on:
+  push:
+    paths:
+      - 'alpine-cryptsetup/**'
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set short SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: alpine-cryptsetup
+          push: true
+          tags: |
+            ghcr.io/shinobiops/alpine-cryptsetup:${{ env.SHORT_SHA }}
+            ghcr.io/shinobiops/alpine-cryptsetup:latest
